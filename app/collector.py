@@ -146,10 +146,10 @@ def collect_source(source):
                     continue
                 with connect() as db:
                     cur = db.execute("""
-                    INSERT OR IGNORE INTO events
+                    INSERT INTO events
                     (title,category,description,start_date,end_date,venue,price,signup_url,
                      source_name,source_url,verification,updated_at)
-                    VALUES (?,?,?,?,?,?,?,?,?,?,?,CURRENT_TIMESTAMP)
+                    VALUES (%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,CURRENT_TIMESTAMP) ON CONFLICT (source_url) DO NOTHING
                     """, tuple(event[k] for k in (
                         "title","category","description","start_date","end_date","venue",
                         "price","signup_url","source_name","source_url","verification")))
