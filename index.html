@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="theme-color" content="#faf8f5">
+<title>长沙活动雷达</title>
+<style>
+:root{--bg:#faf8f5;--paper:#fffdfb;--pink:#d8a6a7;--pink-soft:#f5e9e7;--ink:#403b38;--muted:#9b918b;--line:#eee8e3;--shadow:0 8px 28px rgba(75,57,49,.045)}
+*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--ink);font-family:-apple-system,BlinkMacSystemFont,"Segoe UI","PingFang SC","Microsoft YaHei",sans-serif;font-weight:400}
+button,input{font:inherit}button{cursor:pointer}.shell{max-width:1180px;margin:auto;padding:0 34px 110px}
+header{height:88px;display:flex;align-items:center;gap:34px;border-bottom:1px solid var(--line)}
+.brand{display:flex;align-items:center;gap:12px;min-width:230px}.pin{width:38px;height:38px;border-radius:50%;background:var(--pink-soft);display:grid;place-items:center;color:var(--pink);font-size:20px}
+.brand strong{font-size:18px;letter-spacing:1px}.brand small{display:block;color:var(--muted);font-size:10px;letter-spacing:3px;margin-top:3px}
+.search{height:48px;border:1px solid var(--line);background:var(--paper);border-radius:28px;display:flex;align-items:center;padding:0 18px;gap:10px;flex:1;max-width:590px;color:var(--muted)}
+.search input{border:0;outline:0;background:transparent;width:100%;color:var(--ink)}
+.header-link{margin-left:auto;display:flex;gap:24px;color:#776e68;font-size:14px}.header-link button{border:0;background:none;color:inherit}
+.hero{padding:72px 24px 52px;min-height:330px}.hero h1{font-size:clamp(38px,5vw,58px);line-height:1.35;letter-spacing:1px;font-weight:500;margin:0 0 16px}.hero p{color:var(--muted);font-size:16px;letter-spacing:1px;margin:0 0 28px}.date-pill{border:1px solid var(--line);border-radius:28px;padding:12px 18px;background:var(--paper);color:#766e69;display:inline-flex;gap:12px;align-items:center}
+.categories{display:grid;grid-template-columns:repeat(7,1fr);gap:10px;margin:0 0 54px}.category{border:1px solid transparent;background:var(--paper);border-radius:24px;min-height:102px;box-shadow:var(--shadow);display:flex;flex-direction:column;justify-content:center;align-items:center;gap:10px;color:#716762;transition:.2s}.category span:first-child{font-size:24px;color:var(--pink)}.category.active,.category:hover{border-color:#e7c9c7;background:#fff9f7}
+.section{margin:0 0 48px}.section-head{display:flex;align-items:center;justify-content:space-between;margin-bottom:20px}.section-head h2{font-size:25px;font-weight:500;margin:0;display:flex;align-items:center;gap:13px}.dot{width:12px;height:12px;background:var(--pink);border-radius:50%}.more{border:0;background:none;color:var(--muted)}
+.grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:18px}.event{display:grid;grid-template-columns:45% 1fr;min-height:190px;border:1px solid var(--line);border-radius:24px;overflow:hidden;background:var(--paper);box-shadow:var(--shadow)}
+.event-img{min-height:190px;background:linear-gradient(135deg,#e9dfd6,#cbbdb1);display:grid;place-items:center;color:#fff;font-size:42px;position:relative}
+.event-img.art{background:linear-gradient(135deg,#e8ded5,#b9aaa0)}.event-img.market{background:linear-gradient(135deg,#d9dfd0,#a9b59e)}.event-img.music{background:linear-gradient(135deg,#b8b1c7,#6d667e)}.event-img.outdoor{background:linear-gradient(135deg,#d8e0d8,#93a58e)}
+.event-info{padding:20px 20px 16px;display:flex;flex-direction:column;min-width:0}.event-top{display:flex;justify-content:space-between;gap:8px}.event h3{font-size:17px;font-weight:500;margin:2px 0 16px}.fav{border:0;background:none;color:#b8aaa5;font-size:23px;padding:0 2px;height:28px}.fav.on{color:var(--pink)}.meta{font-size:13px;color:var(--muted);margin:0 0 9px}.price{margin-top:auto;text-align:right;color:var(--pink);font-size:14px}.tag{display:inline-block;background:var(--pink-soft);color:#a77e7e;padding:5px 10px;border-radius:20px;font-size:11px;width:max-content;margin-bottom:8px}
+.empty{padding:54px;text-align:center;color:var(--muted);background:var(--paper);border:1px solid var(--line);border-radius:24px}
+.notice{font-size:12px;color:#a49a94;text-align:center;margin:32px 0 0}
+.page{display:none}.page.active{display:block}
+.calendar-box,.profile-box{background:var(--paper);border:1px solid var(--line);border-radius:24px;padding:28px;box-shadow:var(--shadow)}
+.calendar-title{display:flex;justify-content:space-between;align-items:center;margin-bottom:20px}.calendar-title h2{font-weight:500}.calendar-grid{display:grid;grid-template-columns:repeat(7,1fr);gap:8px;text-align:center}.day{padding:14px 4px;border-radius:14px;background:#faf7f4;color:#756c67}.day.selected{background:var(--pink-soft);color:#986f70}.day small{display:block;color:var(--muted);margin-top:5px}
+.bottom{position:fixed;bottom:0;left:0;right:0;background:rgba(255,253,251,.94);backdrop-filter:blur(14px);border-top:1px solid var(--line);display:flex;justify-content:center;gap:min(13vw,150px);padding:12px 20px 10px;z-index:5}.bottom button{border:0;background:none;color:#8d837d;display:flex;flex-direction:column;align-items:center;gap:4px;font-size:12px;min-width:52px}.bottom button b{font-size:21px;font-weight:400}.bottom button.active{color:var(--pink)}
+@media(max-width:760px){.shell{padding:0 17px 100px}header{height:72px;gap:12px}.brand{min-width:0}.brand strong{font-size:15px}.brand small{font-size:8px}.pin{width:32px;height:32px}.search{height:40px;padding:0 12px}.header-link{display:none}.hero{padding:48px 8px 38px;min-height:0}.hero h1{font-size:38px}.hero p{font-size:14px}.categories{grid-template-columns:repeat(4,1fr);gap:8px;margin-bottom:40px}.category{min-height:82px;border-radius:19px;font-size:13px}.category span:first-child{font-size:21px}.grid{grid-template-columns:1fr;gap:13px}.event{min-height:150px;grid-template-columns:39% 1fr;border-radius:20px}.event-img{min-height:150px}.event-info{padding:14px}.event h3{font-size:15px;margin-bottom:10px}.meta{font-size:12px;margin-bottom:7px}.section-head h2{font-size:21px}.bottom{gap:0;justify-content:space-around}.calendar-grid{gap:4px}.day{padding:10px 2px;font-size:12px}}
+</style>
+</head>
+<body>
+<div class="shell">
+<header>
+ <div class="brand"><div class="pin">⌖</div><div><strong>长沙活动雷达</strong><small>CHANGSHA CITY GUIDE</small></div></div>
+ <label class="search"><span>⌕</span><input id="searchInput" placeholder="搜索长沙的活动、地点..." /></label>
+ <nav class="header-link"><button data-page="calendar">活动日历</button><button data-page="favorites">收藏夹</button></nav>
+</header>
+
+<main>
+<section class="page active" id="homePage">
+ <div class="hero"><h1>长沙，<br>今天有什么活动？</h1><p>发现这座城市的更多可能　♡</p><button class="date-pill" id="todayDate">▦　今天　⌄</button></div>
+ <div class="categories" id="categories">
+  <button class="category active" data-cat="全部"><span>♫</span>全部活动</button>
+  <button class="category" data-cat="演出"><span>♫</span>演出</button>
+  <button class="category" data-cat="展览"><span>▧</span>展览</button>
+  <button class="category" data-cat="市集"><span>♧</span>市集</button>
+  <button class="category" data-cat="电影"><span>▣</span>电影</button>
+  <button class="category" data-cat="运动"><span>⌁</span>运动</button>
+  <button class="category" data-cat="免费"><span>♡</span>免费活动</button>
+ </div>
+ <section class="section"><div class="section-head"><h2><i class="dot"></i>今日推荐</h2><button class="more" data-page="calendar">查看日历　›</button></div><div class="grid" id="todayEvents"></div></section>
+ <section class="section"><div class="section-head"><h2><i class="dot"></i>本周精选</h2><button class="more" data-page="calendar">查看日历　›</button></div><div class="grid" id="weekEvents"></div></section>
+ <p class="notice">当前为界面演示版本 · 示例活动仅用于展示，不代表真实活动信息</p>
+</section>
+<section class="page" id="calendarPage"><div class="hero"><h1>活动日历</h1><p>把想去的活动，安排进日程里。</p></div><div class="calendar-box"><div class="calendar-title"><h2 id="monthTitle">本月活动</h2><span>选择日期查看活动</span></div><div class="calendar-grid" id="calendarGrid"></div></div><section class="section" style="margin-top:35px"><div class="section-head"><h2><i class="dot"></i>近期活动</h2></div><div class="grid" id="calendarEvents"></div></section></section>
+<section class="page" id="favoritesPage"><div class="hero"><h1>我的收藏</h1><p>喜欢的活动，先收进这里。</p></div><div class="grid" id="favoriteEvents"></div></section>
+<section class="page" id="mePage"><div class="hero"><h1>个人中心</h1><p>你的城市探索记录。</p></div><div class="profile-box"><h2 style="font-weight:500">长沙活动雷达</h2><p style="color:var(--muted)">私人活动指南 · 更多功能即将开放</p><p>已收藏 <strong id="favCount">0</strong> 个活动</p></div></section>
+</main>
+</div>
+<nav class="bottom">
+ <button class="active" data-page="home"><b>⌂</b>首页</button>
+ <button data-page="calendar"><b>▦</b>日历</button>
+ <button data-page="favorites"><b>♡</b>收藏</button>
+ <button data-page="me"><b>☺</b>我的</button>
+</nav>
+<script>
+let events=[
+{id:1,title:"光影之间 · 当代艺术展",cat:"展览",date:"今天 10:00–18:00",place:"长沙美术馆",price:"¥45 起",kind:"art",icon:"▧"},
+{id:2,title:"城市露营主题市集",cat:"市集",date:"今天 14:00–21:00",place:"橘子洲头",price:"免费",kind:"market",icon:"♧"},
+{id:3,title:"独立音乐现场",cat:"演出",date:"今天 19:30",place:"MAO Livehouse 长沙",price:"¥120 起",kind:"music",icon:"♫"},
+{id:4,title:"湘江边城市慢跑",cat:"运动",date:"明天 08:00",place:"湘江风光带",price:"免费",kind:"outdoor",icon:"⌁"},
+{id:5,title:"治愈系插画展",cat:"展览",date:"11.04–11.16",place:"IFS 国金中心",price:"¥58 起",kind:"art",icon:"▧"},
+{id:6,title:"周末草地电影放映",cat:"电影",date:"11.07 19:00",place:"梅溪湖艺术中心",price:"免费",kind:"outdoor",icon:"▣"}
+];
+let favorites=JSON.parse(localStorage.getItem("csRadarFav")||"[]"),activeCat="全部",query="";
+const $=id=>document.getElementById(id);
+function card(e){return `<article class="event"><div class="event-img ${e.kind}">${e.icon}</div><div class="event-info"><div class="event-top"><div><span class="tag">${e.cat}</span><h3>${e.title}</h3></div><button class="fav ${favorites.includes(e.id)?"on":""}" data-fav="${e.id}">${favorites.includes(e.id)?"♥":"♡"}</button></div><p class="meta">◷　${e.date}</p><p class="meta">⌖　${e.place}</p><div class="price">${e.price}</div></div></article>`}
+function render(){let filtered=events.filter(e=>(activeCat==="全部"||e.cat===activeCat||(activeCat==="免费"&&e.price==="免费"))&&(`${e.title}${e.place}${e.cat}`).toLowerCase().includes(query.toLowerCase()));$("todayEvents").innerHTML=filtered.slice(0,2).map(card).join("")||'<div class="empty">没有找到相关活动</div>';$("weekEvents").innerHTML=filtered.slice(2).map(card).join("")||'<div class="empty">暂时没有更多活动</div>';$("calendarEvents").innerHTML=events.map(card).join("");$("favoriteEvents").innerHTML=events.filter(e=>favorites.includes(e.id)).map(card).join("")||'<div class="empty">还没有收藏活动，看到喜欢的活动可以点 ♡ 收藏。</div>';$("favCount").textContent=favorites.length}
+function page(name){document.querySelectorAll(".page").forEach(p=>p.classList.remove("active"));$(name+"Page").classList.add("active");document.querySelectorAll(".bottom button").forEach(b=>b.classList.toggle("active",b.dataset.page===name));window.scrollTo({top:0,behavior:"smooth"})}
+document.addEventListener("click",e=>{let f=e.target.closest("[data-fav]");if(f){let id=+f.dataset.fav;favorites=favorites.includes(id)?favorites.filter(x=>x!==id):[...favorites,id];localStorage.setItem("csRadarFav",JSON.stringify(favorites));render();return}let p=e.target.closest("[data-page]");if(p)page(p.dataset.page)});
+$("categories").addEventListener("click",e=>{let b=e.target.closest("[data-cat]");if(!b)return;activeCat=b.dataset.cat;document.querySelectorAll(".category").forEach(x=>x.classList.toggle("active",x===b));render()});
+$("searchInput").addEventListener("input",e=>{query=e.target.value;render()});
+const now=new Date();$("todayDate").textContent="▦　"+(now.getMonth()+1)+"月"+now.getDate()+"日　⌄";$("monthTitle").textContent=now.getFullYear()+"年 "+(now.getMonth()+1)+"月";
+const days=["日","一","二","三","四","五","六"];let first=new Date(now.getFullYear(),now.getMonth(),1).getDay(),count=new Date(now.getFullYear(),now.getMonth()+1,0).getDate();$("calendarGrid").innerHTML=days.map(d=>`<div class="day"><strong>周${d}</strong></div>`).join("")+Array.from({length:first},()=>"<div></div>").join("")+Array.from({length:count},(_,i)=>`<div class="day ${i+1===now.getDate()?"selected":""}">${i+1}<small>${[2,4,7,11,16,20].includes(i+1)?"有活动":""}</small></div>`).join("");
+
+async function loadFromApi(){
+  try{
+    const response=await fetch("/api/events?upcoming=true&limit=200");
+    if(!response.ok) throw new Error("API unavailable");
+    const payload=await response.json();
+    if(Array.isArray(payload.items) && payload.items.length){
+      events=payload.items.map(row=>({
+        id:row.id,title:row.title,cat:row.category||"其他",
+        date:row.start_date?(row.start_date+(row.end_date&&row.end_date!==row.start_date?" – "+row.end_date:"")):"时间待确认",
+        place:row.venue||"地点待确认",price:row.price||"待确认",
+        kind:({演出:"music",展览:"art",市集:"market",运动:"outdoor",电影:"outdoor"})[row.category]||"art",
+        icon:({演出:"♫",展览:"▧",市集:"♧",运动:"⌁",电影:"▣"})[row.category]||"✦",
+        source:row.source_name,sourceUrl:row.source_url,verification:row.verification
+      }));
+      render();
+    }
+  }catch(err){
+    console.info("暂时使用演示数据；启动后端并访问同一服务地址即可加载采集数据。",err);
+  }
+}
+render();
+loadFromApi();
+</script>
+</body></html>
